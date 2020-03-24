@@ -2,14 +2,33 @@ from rest_framework import serializers
 from .models import *
 
 
-# class ReviewSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Review
-#         fields = ('review', 'score')
+class MessageSerializer(serializers.HyperlinkedModelSerializer):
+    username = serializers.CharField(
+        source='user.username'
+    )
+
+    class Meta:
+        model = Message
+        fields = ('id', 'username', 'timestamp', 'message')
 
 
-# class ExtendedUserSerializer(serializers.HyperlinkedModelSerializer):
-#     username = serializers.CharField(
-#         source='base_user.username'
-#     )
+class BoardSerializer(serializers.ModelSerializer):
+    messages = MessageSerializer(many=True)
 
+    class Meta:
+        model = Board
+        fields = ('name', 'messages')
+
+
+class BoardNameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Board
+        fields = ('name', )
+
+
+class UserSerializer(serializers.ModelSerializer):
+    boards = BoardNameSerializer(many=True)
+
+    class Meta:
+        model = User
+        fields = ('username', 'boards')

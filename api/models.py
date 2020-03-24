@@ -23,6 +23,7 @@ class Join(models.Model):
         related_name='users',
         on_delete=models.CASCADE,
     )
+    last_read = models.IntegerField()
 
     def __str__(self):
         return "%s is in %s" % (self.user.username, str(self.board), )
