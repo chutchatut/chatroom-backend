@@ -14,4 +14,11 @@ Chatroom-backend is a backend server stack for the courtcatch project using Djan
 ## Available Command
 
 	BROWSER	/admin/
-
+	POST	/users/	body=['username','password','email','first_name','last_name']
+	GET	/users/
+	GET	/users/<username>
+	POST	/users/<username>/change_password	body=['password']
+	POST	/boards/	body=['name']
+	GET	/boards/
+	GET	/boards/<name>
+	POST	/boards/<name>/post	body=['message']
