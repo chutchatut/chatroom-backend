@@ -28,7 +28,7 @@ def check_arguments(request, args):
     # check for missing arguments
     missing = []
     for arg in args:
-        if arg not in request.data:
+        if arg not in request:
             missing.append(arg)
     if missing:
         print(missing)
@@ -40,6 +40,8 @@ def check_arguments(request, args):
 
 
 class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
     def create(self, request):
         if not request.user.is_staff:
@@ -132,6 +134,8 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 class BoardViewSet(viewsets.ModelViewSet):
+    queryset = Board.objects.all()
+    serializer_class = BoardSerializer
 
     def create(self, request):
         response = check_arguments(request.data, ['name'])
@@ -147,7 +151,12 @@ class BoardViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
         except:
-            Board.objects.create(name=name)
+            board = Board.objects.create(name=name)
+            Join.objects.create(
+                user=request.user,
+                board=board,
+                last_read=0
+            )
             return Response(
                 {'message': 'Board created'},
                 status=status.HTTP_200_OK
@@ -172,11 +181,12 @@ class BoardViewSet(viewsets.ModelViewSet):
             join_status = Join.objects.create(
                 user=request.user,
                 board=board,
-                last_read=0
+                last_read=-1
             )
         last_read = join_status.last_read
-        join_status.last_read = board.messages[-1].id
-        join_status.save()
+        if(board.messages.count()!=0):
+            join_status.last_read = board.messages.last().id
+            join_status.save()
         serializer_class = BoardSerializer
         return Response({'last_read': last_read,
                          'boards': serializer_class(board).data},
@@ -192,5 +202,17 @@ class BoardViewSet(viewsets.ModelViewSet):
             board = Board.objects.get(name=pk)
         except:
             return err_not_found
-        message = request.data['message']
-        Message.objects.create(user=request.user, board=Board, message=message)
+        message_text = request.data['message']
+        message = Message.objects.create(user=request.user, board=board, message=message_text)
+        try:
+            join = Join.objects.get(user=request.user)
+            join.last_read = message.id
+            join.save()
+        except:
+            Join.objects.create(
+                user=request.user,
+                board=board,
+                last_read=message.id
+            )
+        return Response({'message':'Post successfully'},
+                        status=status.HTTP_200_OK)

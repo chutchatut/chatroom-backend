@@ -1,5 +1,5 @@
 """
-ASGI config for courtcatch project.
+ASGI config for chatroom_backend project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'courtcatch.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'chatroom_backend.settings')
 
 application = get_asgi_application()

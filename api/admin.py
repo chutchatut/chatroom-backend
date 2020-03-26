@@ -4,3 +4,4 @@ from .models import *
 # Register your models here.
 admin.site.register(Board)
 admin.site.register(Join)
+admin.site.register(Message)
