@@ -184,7 +184,7 @@ class BoardViewSet(viewsets.ModelViewSet):
                 last_read=-1
             )
         last_read = join_status.last_read
-        if(board.messages.count()!=0):
+        if board.messages.count() != 0:
             join_status.last_read = board.messages.last().id
             join_status.save()
         serializer_class = BoardSerializer
@@ -205,7 +205,8 @@ class BoardViewSet(viewsets.ModelViewSet):
         message_text = request.data['message']
         message = Message.objects.create(user=request.user, board=board, message=message_text)
         try:
-            join = Join.objects.get(user=request.user)
+            join = Join.objects.get(user=request.user,
+                                    board=board)
             join.last_read = message.id
             join.save()
         except:
@@ -214,5 +215,5 @@ class BoardViewSet(viewsets.ModelViewSet):
                 board=board,
                 last_read=message.id
             )
-        return Response({'message':'Post successfully'},
+        return Response({'message': 'Post successfully'},
                         status=status.HTTP_200_OK)
