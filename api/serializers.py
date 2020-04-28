@@ -21,8 +21,12 @@ class BoardSerializer(serializers.ModelSerializer):
 
 
 class BoardNameSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(
+        source='board'
+    )
+
     class Meta:
-        model = Board
+        model = Join
         fields = ('name', )
 
 
