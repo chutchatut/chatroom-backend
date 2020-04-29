@@ -80,8 +80,12 @@ WSGI_APPLICATION = 'chatroom_backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'ldlemzpb',
+        'USER': 'ldlemzpb',
+        'PASSWORD': 'aQJpvFNS-5AQxXZG2L6MgiQ9eiuvu5CH',
+        'HOST': 'satao.db.elephantsql.com',
+        'PORT': '5432'
     }
 }
 
